@@ -7,10 +7,10 @@
   - [Конфигурация](#configure)
   - [Инсталяция](#install)
  
-##start
-##prerequisite
-##configure
-##install
+###start
+###prerequisite
+###configure
+###install
 
 
 
