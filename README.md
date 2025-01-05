@@ -7,19 +7,19 @@
   - [Конфигурация](#configure)
   - [Инсталяция](#install)
  
-##start
+## start
 
 start
 
-###prerequisite
+### prerequisite
 
 cee
 
-###configure
+### configure
 
 cc
 
-###install
+### install
 
 
 
