@@ -9,17 +9,21 @@
  
 ## start
 
-start
+
 
 ### prerequisite
 
-cee
+rockylinux9.5
+ansible
 
 ### configure
 
-cc
+В `inventory/prod.yml` указать пользователя айпи и ссейч ключ.
+В `template/vector.toml.j2` указать поместить конфигурацию вектор.
 
 ### install
+
+ansible-playbook site.yml -i inventory/prod.yml -kK
 
 
 
