@@ -9,9 +9,15 @@
  
 ##start
 
+start
+
 ###prerequisite
 
+cee
+
 ###configure
+
+cc
 
 ###install
 
