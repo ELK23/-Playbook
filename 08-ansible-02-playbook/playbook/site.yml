@@ -13,12 +13,14 @@
           ansible.builtin.get_url:
             url: "https://packages.clickhouse.com/rpm/stable/{{ item }}-{{ clickhouse_version }}.x86_64.rpm"
             dest: "./{{ item }}-{{ clickhouse_version }}.rpm"
+            mode: '0755'
           with_items: "{{ clickhouse_packages }}"
       rescue:
         - name: Get clickhouse distrib
           ansible.builtin.get_url:
             url: "https://packages.clickhouse.com/rpm/stable/clickhouse-common-static-{{ clickhouse_version }}.x86_64.rpm"
             dest: "./clickhouse-common-static-{{ clickhouse_version }}.rpm"
+            mode: '0755'
     - name: Install clickhouse packages
       become: true
       ansible.builtin.yum:
@@ -26,10 +28,10 @@
           - clickhouse-common-static-{{ clickhouse_version }}.rpm
           - clickhouse-client-{{ clickhouse_version }}.rpm
           - clickhouse-server-{{ clickhouse_version }}.rpm
-        disable_gpg_check: yes
+        disable_gpg_check: true
       notify: Start clickhouse service
     - name: Flush handlers
-      meta: flush_handlers
+      ansible.builtin.meta: flush_handlers
     - name: Create database
       ansible.builtin.command: "clickhouse-client -q 'create database logs;'"
       register: create_db
@@ -37,7 +39,7 @@
       changed_when: create_db.rc == 0
 
 - name: Install and configure Vector
-  hosts: all
+  hosts: clickhouse
   become: true
   vars:
     vector_version: "0.33.1"
@@ -59,7 +61,7 @@
       ansible.builtin.unarchive:
         src: "/tmp/vector-{{ vector_version }}.tar.gz"
         dest: "{{ install_dir }}"
-        remote_src: yes
+        remote_src: true
     - name: Configure Vector systemd service
       become: true
       ansible.builtin.copy:
@@ -77,6 +79,7 @@
 
           [Install]
           WantedBy=multi-user.target
+        mode: '0644'
 
     - name: Deploy Vector configuration
       ansible.builtin.template:
@@ -92,3 +95,38 @@
         state: restarted
         enabled: true
 
+- name: Install and start Nginx
+  hosts: clickhouse
+  become: yes
+  tasks:
+    - name: Install Nginx package
+      yum:
+        name: nginx
+        state: present
+    - name: Ensure Nginx service is running
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+- name: Install lighthouse
+  hosts: clickhouse
+  become: true
+  tasks:
+    - name: Download lighthouse
+      ansible.builtin.get_url:
+        url: "https://github.com/VKCOM/lighthouse/archive/refs/heads/master.zip"
+        dest: "/tmp/lighthouse.zip"
+        mode: '0644'
+
+    - name: Create installation directory
+      ansible.builtin.file:
+        path: "/usr/share/nginx/html"
+        state: directory
+        mode: '0755'
+
+    - name: Extract Vector archive
+      ansible.builtin.unarchive:
+        src: "/tmp/lighthouse.zip"
+        dest: "/usr/share/nginx/html"
+        remote_src: true
