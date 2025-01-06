@@ -2,7 +2,21 @@
 clickhouse:
   hosts:
     clickhouse-01:
-      ansible_host: 192.168.88.21 
+      ansible_host: 192.168.88.26 
+      ansible_user: veer
+      ansible_ssh_private_key_file: ~/.ssh/id_ed25519
+      become: true
+vector:
+  hosts:
+    vector-01:
+      ansible_host: 192.168.88.23 
+      ansible_user: veer
+      ansible_ssh_private_key_file: ~/.ssh/id_ed25519
+      become: true
+lighthouse:
+  hosts:
+    lighthouse-01:
+      ansible_host: 192.168.88.24 
       ansible_user: veer
       ansible_ssh_private_key_file: ~/.ssh/id_ed25519
       become: true
