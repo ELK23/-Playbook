@@ -3,8 +3,8 @@
     scm: git
     version: "1.13"
     name: clickhouse 
-   - src: git@github.com:ELK23/vector-role.git
-     version: "0.1"
+  - src: git@github.com:ELK23/vector-role.git
+    version: "0.1"
   
-   - src: git@github.com:ELK23/lighthouse-role.git
-      version: "0.1"
+  - src: git@github.com:ELK23/lighthouse-role.git
+    version: "0.1"
